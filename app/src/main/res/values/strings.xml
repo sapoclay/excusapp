@@ -1,0 +1,207 @@
+<resources>
+    <string name="app_name">excusApp</string>
+    <string name="title">Generador de Excusas</string>
+    <string name="subtitle">Para salir de cualquier situación</string>
+    <string name="btn_generate">Generar Excusa</string>
+    <string name="btn_generate_ai">Generar con IA 🤖</string>
+    <string name="btn_copy">Copiar</string>
+    <string name="btn_share">Compartir</string>
+    <string name="select_category">Selecciona una categoría:</string>
+    <string name="excuse_copied">Excusa copiada al portapapeles</string>
+    <string name="share_excuse">Compartir excusa</string>
+    <string name="initial_emoji">🤔</string>
+    <string name="initial_message">Presiona el botón para generar una excusa</string>
+    <string name="generating">Generando excusa creativa…</string>
+    <string name="error_generating">Error al generar. Intenta de nuevo.</string>
+    <string name="error_no_internet">Sin conexión a Internet</string>
+    <string name="mode_predefined">Modo: Predefinidas</string>
+    <string name="mode_ai">Modo: IA 🤖</string>
+    <string name="fallback_to_predefined">Usando excusa predefinida</string>
+    <string name="api_key_not_configured">API key no configurada. Usando excusas predefinidas.</string>
+
+    <!-- Settings/Configuración -->
+    <string name="settings">Configuración</string>
+    <string name="settings_title">Configuración de API</string>
+    <string name="api_key_label">API Key de Gemini</string>
+    <string name="api_key_hint">Ingresa tu API key aquí</string>
+    <string name="api_key_helper">Obtén tu API key gratis en makersuite.google.com</string>
+    <string name="btn_save">Guardar</string>
+    <string name="btn_get_api_key">Obtener API Key</string>
+    <string name="btn_test_api">Probar API</string>
+    <string name="btn_restore_default">Restaurar API por Defecto</string>
+    <string name="api_key_saved">API key guardada correctamente</string>
+    <string name="api_key_empty">Por favor ingresa una API key</string>
+    <string name="api_key_testing">Probando API key…</string>
+    <string name="api_key_valid">✅ API key válida y funcionando</string>
+    <string name="api_key_invalid">❌ API key inválida o con errores</string>
+    <string name="api_key_restored">API key por defecto restaurada</string>
+    <string name="using_default_key">Usando API key del código</string>
+    <string name="using_user_key">Usando tu API key personalizada</string>
+    <string name="how_to_get_key">¿Cómo obtener una API key?</string>
+    <string name="instructions_step1">1. Ve a Google AI Studio</string>
+    <string name="instructions_step2">2. Inicia sesión con tu cuenta Google</string>
+    <string name="instructions_step3">3. Crea una API key gratis</string>
+    <string name="instructions_step4">4. Copia y pega la clave aquí</string>
+
+    <!-- Splash Screen -->
+    <string name="created_by">Aplicación creada por\nentreunosyceros.net</string>
+
+    <!-- About Screen -->
+    <string name="about">Acerca de</string>
+    <string name="version">Versión 1.0</string>
+    <string name="about_title">¿Qué es excusApp?</string>
+    <string name="about_description">excusApp es tu asistente perfecto para generar excusas creativas y convincentes para cualquier situación del día a día. Ya sea que necesites una razón para llegar tarde al trabajo, justificar una tarea pendiente o cancelar planes, esta app te ayuda con excusas realistas y bien pensadas.</string>
+    <string name="features_title">Características principales</string>
+    <string name="features_list">✅ Excusas predefinidas por categorías\n✅ Generación con IA usando Gemini\n✅ Múltiples categorías: Trabajo, Estudio, Familia, Amigos, Citas y General\n✅ Copia y comparte excusas fácilmente\n✅ Interfaz moderna y fácil de usar\n✅ Configura tu propia API key de Gemini</string>
+    <string name="view_on_github">Ver en GitHub</string>
+
+    <!-- Categorías -->
+    <string name="category_work">Trabajo</string>
+    <string name="category_study">Estudio</string>
+    <string name="category_family">Familia</string>
+    <string name="category_friends">Amigos</string>
+    <string name="category_dates">Citas</string>
+    <string name="category_general">General</string>
+
+    <!-- Excusas para Trabajo -->
+    <string-array name="excuses_work">
+        <item>Se me hizo tarde porque hubo un problema con el transporte público.</item>
+        <item>Mi alarma no sonó esta mañana. Creo que tengo que cambiar de teléfono.</item>
+        <item>Tuve una emergencia familiar de último momento. Tuve que acompañar a mi madre al hospital.</item>
+        <item>Se me quedó el portátil / teléfono en casa y tuve que volver a por el.</item>
+        <item>Hubo un corte de luz en mi zona y no pude prepararme a tiempo.</item>
+        <item>Mi mascota enfermó y tuve que llevarla al veterinario.</item>
+        <item>Tuve una cita médica urgente que no pude reprogramar.</item>
+        <item>Se me averió el coche en el camino y tuve que esperar a la grua</item>
+        <item>Hubo un accidente en la carretera y quedé atrapado en el tráfico.</item>
+        <item>No me llegó la notificación de la reunión por un problema con el correo.</item>
+        <item>Tengo un terrible dolor de cabeza, creo que me estoy poniendo enfermo.</item>
+        <item>Me intoxiqué con algo que comí ayer y me pasé toda la noche agarrado al señor Roca.</item>
+        <item>Me han robado el coche, y esta mañana tuve que ir a denunciarlo a la policía</item>
+    </string-array>
+
+    <!-- Excusas para Estudio -->
+    <string-array name="excuses_study">
+        <item>Mi laptop se quedó sin batería y no encontraba el cargador.</item>
+        <item>Se me borró el trabajo sin querer y tuve que rehacerlo.</item>
+        <item>Pensé que la entrega era para la próxima semana.</item>
+        <item>No entendí bien las instrucciones del profesor.</item>
+        <item>Tuve problemas con internet y no pude subir el archivo a tiempo.</item>
+        <item>Me enfermé durante el fin de semana y no pude avanzar.</item>
+        <item>Ayudé a un compañero con su tarea y no me dio tiempo de hacer la mía.</item>
+        <item>El archivo se corrompió y perdí todo mi progreso.</item>
+        <item>Mi impresora se quedó sin tinta justo cuando iba a imprimir.</item>
+        <item>Tuve que cuidar a mi hermano/prima menor.</item>
+        <item>Se me pasó completamente, he estado muy estresado últimamente.</item>
+        <item>No funcionaba la plataforma cuando intenté entregar.</item>
+    </string-array>
+
+    <!-- Excusas para Familia -->
+    <string-array name="excuses_family">
+        <item>Tengo muchísima tarea de la universidad/trabajo.</item>
+        <item>Ya tengo planes con unos amigos desde hace semanas.</item>
+        <item>No me siento muy bien, creo que me está dando gripe.</item>
+        <item>Tengo que terminar un proyecto importante para mañana.</item>
+        <item>El coche está en el taller y no tengo cómo llegar.</item>
+        <item>Me ofrecí a ayudar a un amigo con una mudanza.</item>
+        <item>Estoy esperando una llamada importante de trabajo.</item>
+        <item>Tengo una reunión virtual que no puedo cancelar.</item>
+        <item>Me invitaron a un evento que puede ser importante para mi carrera.</item>
+        <item>Necesito este tiempo para descansar, he estado muy cansado.</item>
+        <item>Ya gasté mi presupuesto de la quincena.</item>
+        <item>Tengo que estudiar para un examen muy importante.</item>
+    </string-array>
+
+    <!-- Excusas para Amigos -->
+    <string-array name="excuses_friends">
+        <item>Mis papás necesitan que los ayude con algo en casa.</item>
+        <item>Tengo una cena familiar que no puedo cancelar.</item>
+        <item>Estoy enfermo, mejor nos vemos cuando esté mejor.</item>
+        <item>Tengo que trabajar horas extra este fin de semana.</item>
+        <item>Ya quedé con mi pareja y se va a molestar si cancelo.</item>
+        <item>Estoy muy cansado, ha sido una semana pesada.</item>
+        <item>No me alcanza el dinero hasta la próxima quincena.</item>
+        <item>Tengo que terminar un trabajo urgente.</item>
+        <item>Mi primo viene de visita y tengo que estar con él.</item>
+        <item>No me siento de ánimo para salir hoy.</item>
+        <item>Tengo un compromiso familiar ineludible.</item>
+        <item>Me quedé sin batería y acabo de ver tu mensaje.</item>
+    </string-array>
+
+    <!-- Excusas para Citas -->
+    <string-array name="excuses_dates">
+        <item>Surgió algo de último momento con mi familia.</item>
+        <item>No me siento muy bien, creo que comí algo que me cayó mal.</item>
+        <item>Tuve un día muy pesado y estoy agotado.</item>
+        <item>Me surgió un compromiso de trabajo que no puedo evitar.</item>
+        <item>Un amigo tiene una emergencia y me necesita.</item>
+        <item>No voy a poder llegar a tiempo, mejor lo dejamos para otro día.</item>
+        <item>Tengo un problema familiar que necesito atender.</item>
+        <item>Me acabo de acordar que tengo otro compromiso.</item>
+        <item>Creo que no somos compatibles, mejor seamos amigos.</item>
+        <item>Estoy pasando por un momento difícil y necesito tiempo para mí.</item>
+        <item>Mi ex está causando problemas y necesito resolver eso primero.</item>
+        <item>No puedo dejar a mi mascota sola hoy.</item>
+    </string-array>
+
+    <!-- Excusas Generales -->
+    <string-array name="excuses_general">
+        <item>Tengo una jaqueca terrible.</item>
+        <item>Se me olvidó por completo, disculpa.</item>
+        <item>Tuve un problema de último momento.</item>
+        <item>No recibí tu mensaje a tiempo.</item>
+        <item>Mi teléfono se quedó sin batería.</item>
+        <item>Estoy esperando una entrega importante.</item>
+        <item>Tengo visita en casa.</item>
+        <item>Me quedé dormido, estaba muy cansado.</item>
+        <item>Hubo una emergencia que tuve que atender.</item>
+        <item>No me di cuenta de la hora.</item>
+        <item>Tuve un problema con el coche/transporte.</item>
+        <item>No me siento bien del estómago.</item>
+        <item>Tengo que cuidar a alguien.</item>
+        <item>Se me cruzó otro compromiso importante.</item>
+        <item>Necesito quedarme en casa hoy.</item>
+    </string-array>
+
+    <!-- Frases motivacionales irónicas -->
+    <string-array name="ironic_phrases">
+        <item>💪 "La honestidad está sobrevalorada"</item>
+        <item>🎭 "Ser creativo nunca fue tan fácil"</item>
+        <item>🌟 "Tu creatividad no tiene límites... ni tu responsabilidad"</item>
+        <item>😎 "Maestro del arte de la evasión"</item>
+        <item>🏆 "Campeón de las excusas desde 2025"</item>
+        <item>🎪 "La verdad es relativa, las excusas son absolutas"</item>
+        <item>🚀 "Elevando el arte de la procrastinación"</item>
+        <item>🎨 "Shakespeare de las justificaciones"</item>
+        <item>⚡ "Porque la sinceridad puede esperar"</item>
+        <item>🌈 "Construyendo puentes... de mentiritas blancas"</item>
+        <item>🎯 "Precisión quirúrgica en el arte de esquivar"</item>
+        <item>🦸 "Superhéroe de las salidas ingeniosas"</item>
+        <item>🎓 "Doctor honoris causa en excusología"</item>
+        <item>🔥 "Quemando etapas... y compromisos"</item>
+        <item>💼 "Profesional certificado en evasión social"</item>
+        <item>🎪 "El circo de las responsabilidades puede esperar"</item>
+        <item>🌙 "La verdad duerme, las excusas trabajan 24/7"</item>
+        <item>🎬 "Premio Oscar a mejor actuación improvisada"</item>
+    </string-array>
+
+    <!-- Nuevas strings para compartir como imagen -->
+    <string name="share_as_image">Compartir como Imagen</string>
+    <string name="generating_image">Generando imagen…</string>
+    <string name="error_generating_image">Error al generar imagen</string>
+    <string name="share_image_title">¡Comparte tu excusa!</string>
+
+    <!-- Strings para crear meme con imagen -->
+    <string name="create_meme">Crear Meme</string>
+    <string name="create_meme_title">¿Cómo crear tu meme?</string>
+    <string name="meme_option_generate">Generar Automático</string>
+    <string name="meme_option_gallery">Desde Galería</string>
+    <string name="meme_option_camera">Tomar Foto</string>
+    <string name="select_meme_source">Selecciona una opción</string>
+    <string name="permission_camera_denied">Permiso de cámara denegado</string>
+    <string name="permission_storage_denied">Permiso de almacenamiento denegado</string>
+    <string name="camera_error">Error al abrir la cámara</string>
+    <string name="gallery_error">Error al abrir la galería</string>
+    <string name="image_processing">Procesando imagen…</string>
+</resources>
+
