@@ -1,5 +1,10 @@
 # excusApp - Generador de excusas 🎭
 
+<img width="1024" height="1024" alt="logo" src="https://github.com/user-attachments/assets/20661cb6-fdb2-4e1a-b9cf-90b00b4bf96a" />
+<img width="398" height="896" alt="compartir-excusa" src="https://github.com/user-attachments/assets/734bd79c-817a-435f-bcb2-0a23b68aa13c" />
+<img width="403" height="889" alt="configuracion-excusapp" src="https://github.com/user-attachments/assets/91892cd8-006f-4308-96f7-d31489308373" />
+<img width="405" height="897" alt="pantalla-inicial-excusapp" src="https://github.com/user-attachments/assets/e3c3d972-6823-4789-a286-056cf63deff4" />
+
 Esta es una aplicación Android para generar excusas creativas para cualquier situación del día a día. ¡Nunca más te quedes sin una buena excusa!
 
 ## ✨ Características principales
@@ -68,6 +73,8 @@ Cada vez que generas una excusa, se muestra una frase motivacional irónica alea
 
 ## 📸 Capturas de pantalla
 
+<img width="405" height="897" alt="pantalla-inicial-excusapp" src="https://github.com/user-attachments/assets/b7bfc71a-bc59-4bf3-a6d2-11682d31780f" />
+
 ### Pantalla principal
 - Logo de la app
 - Selector de categorías con chips
@@ -76,12 +83,18 @@ Cada vez que generas una excusa, se muestra una frase motivacional irónica alea
 - Botones de acción (Copiar, Compartir, Compartir como Imagen)
 
 ### Crear memes
+
+<img width="398" height="896" alt="compartir-excusa" src="https://github.com/user-attachments/assets/5020d95c-d78f-444c-9599-1c2c83dad251" />
+
 - Diálogo con 3 opciones de creación
-- Generación automática con diseño profesional
+- Generación automática con diseño
 - Integración con cámara y galería
 - Texto estilo meme con fondo negro semi-transparente
 
 ### Configuración
+
+<img width="403" height="889" alt="configuracion-excusapp" src="https://github.com/user-attachments/assets/150e4bbe-17e7-4a24-8d46-8066009865b0" />
+
 - Campo para ingresar API key de Gemini
 - Botón para probar la API
 - Indicador de API configurada/no configurada
