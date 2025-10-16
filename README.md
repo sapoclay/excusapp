@@ -1,9 +1,6 @@
 # excusApp - Generador de excusas 🎭
 
 <img width="1024" height="1024" alt="logo" src="https://github.com/user-attachments/assets/20661cb6-fdb2-4e1a-b9cf-90b00b4bf96a" />
-<img width="398" height="896" alt="compartir-excusa" src="https://github.com/user-attachments/assets/734bd79c-817a-435f-bcb2-0a23b68aa13c" />
-<img width="403" height="889" alt="configuracion-excusapp" src="https://github.com/user-attachments/assets/91892cd8-006f-4308-96f7-d31489308373" />
-<img width="405" height="897" alt="pantalla-inicial-excusapp" src="https://github.com/user-attachments/assets/e3c3d972-6823-4789-a286-056cf63deff4" />
 
 Esta es una aplicación Android para generar excusas creativas para cualquier situación del día a día. ¡Nunca más te quedes sin una buena excusa!
 
