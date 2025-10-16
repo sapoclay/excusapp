@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.Copy
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -37,6 +39,42 @@ android {
         viewBinding = true
     }
 }
+
+// Eliminar el bloque androidComponents anterior (causaba referencias no resueltas)
+// y usar tareas Gradle para renombrar automáticamente los APKs tras el assemble.
+
+val debugApkDir = layout.buildDirectory.dir("outputs/apk/debug")
+val releaseApkDir = layout.buildDirectory.dir("outputs/apk/release")
+
+// Renombra app-debug.apk -> excusApp-debug.apk
+tasks.register<Copy>("renameDebugApk") {
+    // Ejecutar solo si existe el APK fuente
+    onlyIf {
+        val src = debugApkDir.get().file("app-debug.apk").asFile
+        src.exists()
+    }
+    from(debugApkDir.map { it.file("app-debug.apk") })
+    into(debugApkDir)
+    rename("app-debug.apk", "excusApp-debug.apk")
+    mustRunAfter("assembleDebug")
+}
+
+// Renombra app-release.apk -> excusApp-release.apk
+tasks.register<Copy>("renameReleaseApk") {
+    // Ejecutar solo si existe el APK fuente
+    onlyIf {
+        val src = releaseApkDir.get().file("app-release.apk").asFile
+        src.exists()
+    }
+    from(releaseApkDir.map { it.file("app-release.apk") })
+    into(releaseApkDir)
+    rename("app-release.apk", "excusApp-release.apk")
+    mustRunAfter("assembleRelease")
+}
+
+// Encadenar las tareas de rename al final de los assemble correspondientes (configuración perezosa)
+tasks.matching { it.name == "assembleDebug" }.configureEach { finalizedBy("renameDebugApk") }
+tasks.matching { it.name == "assembleRelease" }.configureEach { finalizedBy("renameReleaseApk") }
 
 dependencies {
 
