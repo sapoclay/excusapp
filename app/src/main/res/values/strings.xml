@@ -43,6 +43,14 @@
     <string name="instructions_step3">3. Crea una API key gratis</string>
     <string name="instructions_step4">4. Copia y pega la clave aquí</string>
 
+    <!-- Tema / Theme Settings -->
+    <string name="theme_settings">Apariencia</string>
+    <string name="theme_label">Tema de la aplicación</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_system">Según el sistema</string>
+    <string name="theme_changed">Tema cambiado correctamente</string>
+
     <!-- Splash Screen -->
     <string name="created_by">Aplicación creada por\nentreunosyceros.net</string>
 
@@ -65,19 +73,19 @@
 
     <!-- Excusas para Trabajo -->
     <string-array name="excuses_work">
-        <item>Se me hizo tarde porque hubo un problema con el transporte público.</item>
-        <item>Mi alarma no sonó esta mañana. Creo que tengo que cambiar de teléfono.</item>
-        <item>Tuve una emergencia familiar de último momento. Tuve que acompañar a mi madre al hospital.</item>
-        <item>Se me quedó el portátil / teléfono en casa y tuve que volver a por el.</item>
+        <item>Un político se tiró delante de un autobús y nos tuvimos que quedar a aplaudir hasta que se lo llevaron.</item>
+        <item>Mi alarma no sonó esta mañana. Creo que tengo que cambiar de teléfono o sacarlo de dentro del congelador.</item>
+        <item>Tuve una emergencia familiar de último momento. Tuve que atender un imprevisto doméstico.</item>
+        <item>Se me quedó el portátil / teléfono en casa y tuve que volver a por él.</item>
         <item>Hubo un corte de luz en mi zona y no pude prepararme a tiempo.</item>
-        <item>Mi mascota enfermó y tuve que llevarla al veterinario.</item>
+        <item>Tengo que pasar tiempo de calidad con mi perro. No puedo ir a trabajar hoy.</item>
         <item>Tuve una cita médica urgente que no pude reprogramar.</item>
-        <item>Se me averió el coche en el camino y tuve que esperar a la grua</item>
+        <item>Se me averió el coche en el camino y tuve que esperar a la grúa.</item>
         <item>Hubo un accidente en la carretera y quedé atrapado en el tráfico.</item>
         <item>No me llegó la notificación de la reunión por un problema con el correo.</item>
         <item>Tengo un terrible dolor de cabeza, creo que me estoy poniendo enfermo.</item>
-        <item>Me intoxiqué con algo que comí ayer y me pasé toda la noche agarrado al señor Roca.</item>
-        <item>Me han robado el coche, y esta mañana tuve que ir a denunciarlo a la policía</item>
+        <item>Me intoxiqué con algo que comí ayer y me pasé la noche encontrándome mal.</item>
+        <item>Me han robado el coche y tuve que ir a denunciarlo esta mañana.</item>
     </string-array>
 
     <!-- Excusas para Estudio -->
@@ -125,7 +133,7 @@
         <item>Mi primo viene de visita y tengo que estar con él.</item>
         <item>No me siento de ánimo para salir hoy.</item>
         <item>Tengo un compromiso familiar ineludible.</item>
-        <item>Me quedé sin batería y acabo de ver tu mensaje.</item>
+        <item>Me quedé sin batería y acabé de ver tu mensaje.</item>
     </string-array>
 
     <!-- Excusas para Citas -->
@@ -167,18 +175,18 @@
     <string-array name="ironic_phrases">
         <item>💪 "La honestidad está sobrevalorada"</item>
         <item>🎭 "Ser creativo nunca fue tan fácil"</item>
-        <item>🌟 "Tu creatividad no tiene límites... ni tu responsabilidad"</item>
+        <item>🌟 "Tu creatividad no tiene límites… ni tu responsabilidad"</item>
         <item>😎 "Maestro del arte de la evasión"</item>
         <item>🏆 "Campeón de las excusas desde 2025"</item>
         <item>🎪 "La verdad es relativa, las excusas son absolutas"</item>
         <item>🚀 "Elevando el arte de la procrastinación"</item>
         <item>🎨 "Shakespeare de las justificaciones"</item>
         <item>⚡ "Porque la sinceridad puede esperar"</item>
-        <item>🌈 "Construyendo puentes... de mentiritas blancas"</item>
+        <item>🌈 "Construyendo puentes… de mentiritas blancas"</item>
         <item>🎯 "Precisión quirúrgica en el arte de esquivar"</item>
         <item>🦸 "Superhéroe de las salidas ingeniosas"</item>
         <item>🎓 "Doctor honoris causa en excusología"</item>
-        <item>🔥 "Quemando etapas... y compromisos"</item>
+        <item>🔥 "Quemando etapas… y compromisos"</item>
         <item>💼 "Profesional certificado en evasión social"</item>
         <item>🎪 "El circo de las responsabilidades puede esperar"</item>
         <item>🌙 "La verdad duerme, las excusas trabajan 24/7"</item>
@@ -203,5 +211,23 @@
     <string name="camera_error">Error al abrir la cámara</string>
     <string name="gallery_error">Error al abrir la galería</string>
     <string name="image_processing">Procesando imagen…</string>
-</resources>
 
+    <!-- Cadenas para elegir excusa al tomar/seleccionar foto -->
+    <string name="use_generated_excuse">Usar excusa generada</string>
+    <string name="write_custom_excuse">Escribir mi propia excusa</string>
+    <string name="choose_excuse_title">¿Qué excusa quieres usar?</string>
+    <string name="no_excuse_available">No hay excusa generada. Genera una primero.</string>
+    <string name="hint_custom_excuse">Escribe tu excusa aquí…</string>
+    <string name="enter_custom_excuse">Tu excusa</string>
+    <string name="custom_excuse_empty">La excusa no puede estar vacía</string>
+
+    <!-- PreviewActivity strings -->
+    <string name="preview_title">Previsualizar imagen</string>
+    <string name="preview_instruction">Ajusta la excusa y posición, luego genera la previsualización.</string>
+    <string name="preview_original_image">Imagen original seleccionada</string>
+    <string name="preview_edit_excuse_hint">Edita la excusa...</string>
+    <string name="position_top">Arriba</string>
+    <string name="position_bottom">Abajo</string>
+    <string name="btn_generate_preview">Generar previsualización</string>
+    <string name="btn_share_meme">Compartir meme</string>
+</resources>

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.example.excusas.databinding.ActivitySettingsBinding
 import com.example.excusas.repository.ExcuseRepository
@@ -28,6 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         setupUI()
         setupListeners()
         loadSavedApiKey()
+        loadSavedTheme()
         updateStatusText()
     }
 
@@ -53,6 +55,21 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnRestoreDefault.setOnClickListener {
             restoreDefaultApiKey()
         }
+
+        // Listeners para los radio buttons de tema
+        binding.rgTheme.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rbThemeLight -> {
+                    applyTheme(PreferencesManager.THEME_LIGHT)
+                }
+                R.id.rbThemeDark -> {
+                    applyTheme(PreferencesManager.THEME_DARK)
+                }
+                R.id.rbThemeSystem -> {
+                    applyTheme(PreferencesManager.THEME_SYSTEM)
+                }
+            }
+        }
     }
 
     private fun loadSavedApiKey() {
@@ -60,6 +77,32 @@ class SettingsActivity : AppCompatActivity() {
         if (savedKey.isNotEmpty() && savedKey != "AIzaSyBYourAPIKeyHere") {
             binding.etApiKey.setText(savedKey)
         }
+    }
+
+    private fun loadSavedTheme() {
+        when (preferencesManager.getThemeMode()) {
+            PreferencesManager.THEME_LIGHT -> binding.rbThemeLight.isChecked = true
+            PreferencesManager.THEME_DARK -> binding.rbThemeDark.isChecked = true
+            PreferencesManager.THEME_SYSTEM -> binding.rbThemeSystem.isChecked = true
+        }
+    }
+
+    private fun applyTheme(themeMode: Int) {
+        preferencesManager.saveThemeMode(themeMode)
+
+        when (themeMode) {
+            PreferencesManager.THEME_LIGHT -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            PreferencesManager.THEME_DARK -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            PreferencesManager.THEME_SYSTEM -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
+
+        Toast.makeText(this, R.string.theme_changed, Toast.LENGTH_SHORT).show()
     }
 
     private fun updateStatusText() {

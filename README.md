@@ -17,26 +17,43 @@ Esta es una aplicación Android para generar excusas creativas para cualquier si
 - **🤖 Generación con IA** usando Google Gemini para excusas únicas y personalizadas (Es necesaria una API KEY Gratuita)
 - **😄 Frases motivacionales irónicas** que acompañan cada excusa generada para hacerla más divertida
 
-### 🖼️ Crear memes con tus excusas (NUEVO)
-Convierte tus excusas en memes utilizando estas **tres opciones**:
+### 🖼️ Crear memes con tus excusas
+Convierte tus excusas en memes utilizando estas **cuatro opciones**:
 
 1. **✨ Generar automático**
-   - Crea una imagen con fondo degradado morado. Genera una tarjeta igual que en la aplicación.
+   - Crea una imagen con fondo degradado morado
    - Incluye emoji de la categoría
    - Texto con la excusa
    - Frase irónica en la parte inferior
    - Marca de agua "excusApp"
+   - Formato optimizado para redes sociales (1080x1080)
 
-2. **📷 Desde galería**
+2. **✍️ Escribir excusa personalizada**
+   - Escribe tu propia excusa antes de seleccionar la imagen
+   - Elige entre tomar una foto o seleccionar de galería
+   - Ideal para situaciones específicas
+
+3. **📷 Desde galería**
    - Selecciona cualquier foto de tu galería
+   - Elige usar la excusa generada o escribir una nueva
+   - Vista previa editable con opciones de posicionamiento
    - La app la convierte en un meme estilo clásico
-   - Texto arriba y abajo con fondo negro
+   - Texto arriba y abajo con fondo negro semi-transparente
    - La excusa se superpone a tu imagen
 
-3. **📸 Tomar foto**
+4. **📸 Tomar foto**
    - Abre la cámara y toma una foto al instante
-   - Convierte la foto en meme automáticamente
+   - Elige la excusa o escribe una personalizada
+   - Vista previa y edición antes de compartir
    - Perfecto para memes con contexto real
+
+### 🎨 Editor de memes (NUEVO)
+Cuando seleccionas una imagen desde galería o cámara, accedes a una pantalla de previsualización donde puedes:
+- **📝 Editar el texto** de la excusa antes de generar el meme
+- **⬆️⬇️ Elegir posición del texto**: Arriba o Abajo
+- **👁️ Previsualizar** el resultado antes de compartir
+- **✨ Texto mejorado**: Sombra sutil en lugar de borde grueso para mejor legibilidad
+- **🎯 Layout optimizado**: Los elementos se distribuyen correctamente sin solaparse
 
 ### 📤 Compartir y copiar
 - **📋 Copiar al portapapeles** para pegar en cualquier lugar
@@ -44,15 +61,21 @@ Convierte tus excusas en memes utilizando estas **tres opciones**:
 - **🎨 Compartir como imagen/meme** en formato optimizado para redes sociales (1080x1080)
 
 ### 🎨 Interfaz y experiencia
-- **🌙 Modo día/noche** automático con Material Design 3
+- **🌓 Selector de tema** personalizable con tres opciones:
+  - ☀️ **Tema Claro**: Interfaz luminosa
+  - 🌙 **Tema Oscuro**: Modo nocturno para los ojos
+  - 📱 **Según el sistema**: Se adapta automáticamente a tu configuración de Android
+- **Material Design 3** con componentes modernos
 - **🎬 Splash screen** con logo y créditos (3.5 segundos)
 - **⚡ Animaciones suaves** al generar y mostrar excusas
 - **🔄 Interfaz moderna** e intuitiva
 
 ### ⚙️ Configuración avanzada
+- **🌓 Selector de tema** en configuración (Claro/Oscuro/Sistema)
 - **🔑 API Key personalizable** desde la interfaz de la app
 - **✅ Verificación de API** con botón de prueba
 - **🔄 Fallback automático** a excusas predefinidas si no hay conexión o API
+- **💾 Persistencia de configuración**: Tu tema y API key se guardan automáticamente
 - **ℹ️ Pantalla "Acerca de"** con información del proyecto y enlace a GitHub
 
 ## 🎯 Ejemplos de frases irónicas
@@ -145,14 +168,18 @@ Si quieres tener una API key por defecto en el código:
 - **View Binding** - Vinculación de vistas type-safe
 - **ConstraintLayout** - Layouts flexibles y responsive
 - **CoordinatorLayout** - FABs y comportamientos avanzados
-- **Material Components** - Chips, Cards, Buttons, etc.
+- **Material Components** - Chips, Cards, Buttons, RadioButtons, etc.
+- **AppCompatDelegate** - Soporte para temas claro/oscuro
 
 ### Funcionalidades
-- **Google Gemini API** - Generación de texto con IA (modelo gemini-2.5-flash)
-- **SharedPreferences** - Almacenamiento local de configuración
+- **Google Gemini API** - Generación de texto con IA (modelo gemini-2.0-flash-exp)
+- **SharedPreferences** - Almacenamiento local de configuración y preferencias de tema
 - **FileProvider** - Compartir archivos entre apps de forma segura
-- **Canvas & Bitmap** - Generación de imágenes y memes
+- **Canvas & Bitmap** - Generación de imágenes y memes con texto
+- **Paint & Shadow** - Renderizado de texto con sombras para mejor legibilidad
+- **ExifInterface** - Corrección automática de orientación de imágenes
 - **ActivityResultContracts** - Manejo moderno de permisos y resultados
+- **Application Class** - Aplicación del tema al iniciar la app
 
 ### Permisos
 - `INTERNET` - Conectar con la API de Gemini
@@ -170,161 +197,159 @@ excusApp/
 │   │   ├── java/com/example/excusas/
 │   │   │   ├── api/
 │   │   │   │   ├── GeminiApiService.kt      # Interfaz Retrofit para Gemini API
-│   │   │   │   └── GeminiModels.kt          # Modelos de datos para API
+│   │   │   │   ├── GeminiModels.kt          # Modelos de datos para API
+│   │   │   │   └── RetrofitClient.kt        # Cliente Retrofit configurado
 │   │   │   ├── model/
 │   │   │   │   └── ExcuseCategory.kt        # Modelo de categoría
 │   │   │   ├── repository/
 │   │   │   │   └── ExcuseRepository.kt      # Lógica de negocio
 │   │   │   ├── utils/
-│   │   │   │   └── PreferencesManager.kt    # Gestión de SharedPreferences
+│   │   │   │   └── PreferencesManager.kt    # Gestión de SharedPreferences y tema
 │   │   │   ├── MainActivity.kt              # Pantalla principal
+│   │   │   ├── PreviewActivity.kt           # Editor de memes con vista previa (NUEVO)
 │   │   │   ├── SplashActivity.kt            # Splash screen inicial
-│   │   │   ├── SettingsActivity.kt          # Configuración de API
-│   │   │   └── AboutActivity.kt             # Acerca de la app
+│   │   │   ├── SettingsActivity.kt          # Configuración de API y tema
+│   │   │   ├── AboutActivity.kt             # Acerca de la app
+│   │   │   ├── ImageUtils.kt                # Utilidades para procesamiento de imágenes (NUEVO)
+│   │   │   └── ExcusasApplication.kt        # Clase Application para aplicar tema (NUEVO)
 │   │   └── res/
 │   │       ├── drawable/
 │   │       │   ├── logo.png                 # Logo de la aplicación
 │   │       │   └── ic_launcher_*.xml        # Iconos adaptativos
 │   │       ├── layout/
 │   │       │   ├── activity_main.xml        # Layout principal
+│   │       │   ├── activity_preview.xml     # Layout editor de memes (NUEVO)
 │   │       │   ├── activity_splash.xml      # Layout splash
-│   │       │   ├── activity_settings.xml    # Layout configuración
+│   │       │   ├── activity_settings.xml    # Layout configuración (con selector tema)
 │   │       │   └── activity_about.xml       # Layout acerca de
 │   │       ├── mipmap-*/                    # Iconos de launcher
 │   │       ├── values/
-│   │       │   ├── strings.xml              # Todas las strings
+│   │       │   ├── strings.xml              # Todas las strings (incluyendo tema)
 │   │       │   ├── colors.xml               # Paleta de colores
-│   │       │   └── themes.xml               # Temas Material 3
+│   │       │   └── themes.xml               # Temas Material 3 (claro/oscuro)
 │   │       └── xml/
 │   │           └── file_paths.xml           # Configuración FileProvider
-│   └── build.gradle.kts                     # Dependencias y configuración
+│   └── build.gradle.kts                     # Dependencias y configuración (APK renombrado)
 ├── gradle/
 │   └── libs.versions.toml                   # Catálogo de versiones
-├── .gitignore                               # Protección de archivos sensibles
 └── README.md                                # Este archivo
 ```
 
-## 🔒 Seguridad y privacidad
+## 🆕 Novedades en esta versión
 
-### Permisos y privacidad
+### Mejoras de interfaz
+- ✨ **Editor de memes completo**: Nueva pantalla PreviewActivity con controles intuitivos
+- 🎨 **Texto mejorado**: Sombra sutil en lugar de borde grueso brillante (mucho más legible)
+- 📐 **Layout corregido**: Los elementos ahora se distribuyen correctamente sin solaparse
+- 🌓 **Selector de tema**: Elige entre claro, oscuro o automático según el sistema
+- 🎯 **Mejor UX**: Botón de compartir deshabilitado hasta generar la previsualización
 
-- **Permisos solicitados dinámicamente** (runtime permissions)
-- **Explicación clara** al usuario antes de solicitar permisos
-- **Sin recopilación de datos** personales
-- **Sin analytics** ni rastreadores
-- **API keys locales** - No se envían a servidores propios
+### Funcionalidades nuevas
+- 📝 **Edición de texto**: Modifica la excusa antes de generar el meme final
+- ⬆️⬇️ **Posicionamiento de texto**: Elige si el texto va arriba o abajo de la imagen
+- 👁️ **Vista previa en tiempo real**: Ve el resultado antes de compartir
+- 🔄 **Persistencia de tema**: Tu preferencia de tema se guarda automáticamente
+- 📦 **APK renombrado**: El archivo se genera como `excusApp-debug.apk` automáticamente
+
+### Mejoras técnicas
+- 🏗️ **ExcusasApplication**: Clase Application que aplica el tema al inicio
+- 🖼️ **ImageUtils**: Módulo dedicado para procesamiento de imágenes
+- 🔐 **Permisos mejorados**: FLAG_GRANT_READ_URI_PERMISSION para compartir URIs
+- 📊 **Logging detallado**: Logs para facilitar debugging de imágenes
+- ✅ **Validaciones robustas**: Mejor manejo de errores y casos extremos
 
 ## 📱 Uso de la aplicación
 
 ### Generar una excusa
+1. Abre la aplicación
+2. Selecciona una categoría (Trabajo, Estudio, etc.)
+3. Pulsa el botón "Generar Excusa" o activa el modo IA y pulsa "Generar con IA 🤖"
+4. ¡Disfruta de tu excusa creativa con una frase irónica!
 
-1. **Selecciona una categoría** (Trabajo, Estudio, etc.)
-2. **Elige el modo:**
-   - **Predefinidas:** Excusas aleatorias de nuestra base de datos
-   - **IA:** Genera excusas únicas con Gemini (requiere API key)
-3. **Pulsa "generar excusa"**
-4. **¡Listo!** Verás:
-   - La excusa generada
-   - Una frase irónica motivacional
-   - Botones para copiar y compartir
+### Crear un meme con imagen personalizada
+1. Genera o escribe una excusa
+2. Pulsa el botón "Compartir como Imagen"
+3. Elige una opción:
+   - **Generar Automático**: Crea una imagen con diseño predefinido
+   - **Escribir mi propia excusa**: Escribe primero, luego elige imagen
+   - **Desde Galería**: Selecciona una foto existente
+   - **Tomar Foto**: Usa la cámara
+4. Si elegiste galería o cámara:
+   - Se abre la pantalla de **previsualización**
+   - Edita el texto de la excusa si lo deseas
+   - Elige si el texto va **Arriba** o **Abajo**
+   - Pulsa **"Generar previsualización"** para ver el resultado
+   - Si te gusta, pulsa **"Compartir meme"**
+5. Comparte en tus redes sociales favoritas
 
-### Crear un meme
+### Cambiar el tema de la aplicación
+1. Ve a **Configuración** (botón flotante con ⚙️)
+2. En la sección **"Apariencia"**, elige:
+   - ☀️ **Claro** - Fondo blanco
+   - 🌙 **Oscuro** - Fondo negro
+   - 📱 **Según el sistema** - Se adapta automáticamente
+3. El cambio se aplica inmediatamente
+4. Tu preferencia se guarda para futuras sesiones
 
-1. **Genera una excusa** primero
-2. **Pulsa "Compartir como imagen"**
-3. **Selecciona una opción:**
-   - **Generar automático:** Imagen con diseño igual al del la aplicación
-   - **Desde galería:** Usa una foto tuya de la galería de imágenes del teléfono
-   - **Tomar foto:** Captura una foto nueva
-4. **Comparte** en tus redes sociales favoritas
+### Configurar API de Gemini
+1. Ve a Configuración
+2. Ingresa tu API key de Gemini
+3. (Opcional) Pulsa "Probar API" para verificar
+4. Pulsa "Guardar"
+5. Activa el switch de IA en la pantalla principal
 
-## 🤝 Contribuciones
+## 📥 Instalación
 
-¡Las contribuciones son bienvenidas! Si quieres mejorar excusApp:
+### Descargar APK
+1. Ve a la sección [Releases](../../releases) de este repositorio
+2. Descarga el archivo `excusApp-debug.apk` (o `excusApp-release.apk`)
+3. Instala el APK en tu dispositivo Android
+4. (Puede que necesites habilitar "Instalar apps de origen desconocido" en configuración)
 
-### Cómo contribuir
+### Compilar desde código fuente
+```bash
+# Clonar el repositorio
+git clone https://github.com/tuusuario/excusas.git
+cd excusas
 
-1. **Fork el proyecto**
-2. **Crea una rama** para tu feature:
-   ```bash
-   git checkout -b feature/CaracteristicaIncreible
-   ```
-3. **Realiza tus cambios** siguiendo las convenciones del proyecto
-4. **Commit** tus cambios:
-   ```bash
-   git commit -m 'Add some CaracteristicaIncreible'
-   ```
-5. **Push** a tu fork:
-   ```bash
-   git push origin feature/CaracteristicaIncreible
-   ```
-6. **Abre un pull request** en GitHub
+# Compilar APK de debug
+./gradlew assembleDebug
 
-### Reglas Importantes
+# El APK estará en: app/build/outputs/apk/debug/excusApp-debug.apk
 
-- ⚠️ **NO incluyas API keys reales** en tus commits
-- ✅ Sigue el estilo de código existente (Kotlin conventions)
-- ✅ Añade comentarios explicativos cuando sea necesario
-- ✅ Prueba tus cambios antes de hacer PR
-- ✅ Actualiza el README si añades nuevas características
+# Compilar APK de release
+./gradlew assembleRelease
 
-### Ideas para contribuir
+# El APK estará en: app/build/outputs/apk/release/excusApp-release.apk
+```
 
-- 🌍 Traducciones a otros idiomas
-- 🎨 Nuevos diseños de memes
-- 📝 Más excusas predefinidas
-- 🤖 Mejoras en los prompts de IA
-- 🐛 Reportar y corregir bugs
-- ✨ Nuevas características creativas
+## 🤝 Contribuir
 
-## 🐛 Reportar bugs
+Las contribuciones son bienvenidas. Si quieres mejorar la app:
 
-Si encuentras un bug, por favor:
-
-1. **Verifica** que no esté ya reportado en [Issues](https://github.com/sapoclay/excusapp/issues)
-2. **Abre un nuevo issue** con:
-   - Descripción clara del problema
-   - Pasos para reproducirlo
-   - Screenshots si es posible
-   - Versión de Android y dispositivo
-   - Logs relevantes (si aplica)
-
-## 👤 Autor
-
-- **Sitio Web:** [entreunosyceros.net](https://entreunosyceros.net)
-- **GitHub:** [@sapoclay](https://github.com/sapoclay)
-- **Repositorio:** [github.com/sapoclay/excusapp](https://github.com/sapoclay/excusapp)
-
-### 📞 Soporte y Contacto
-
-- **Issues:** [GitHub Issues](https://github.com/sapoclay/excusapp/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/sapoclay/excusapp/discussions)
-- **Email:** Disponible en [entreunosyceros.net](https://entreunosyceros.net)
+1. Haz fork del proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## 📄 Licencia
 
-Este proyecto es de código abierto y está disponible bajo licencia libre. Puedes:
-- ✅ Usar el código libremente
-- ✅ Modificarlo según tus necesidades
-- ✅ Distribuirlo
-- ✅ Usarlo en proyectos comerciales
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## ⚠️ Disclaimer
+## 👨‍💻 Autor
 
-Esta aplicación está diseñada con **fines de entretenimiento y educativos**. 
+**entreunosyceros.net**
 
-- El uso de las excusas generadas es **responsabilidad exclusiva del usuario**
-- Se recomienda usar la app de **manera ética y responsable**
-- No nos hacemos responsables del uso indebido de las excusas generadas
-- La IA puede generar contenido inesperado - revisa antes de usar
-- Respeta las políticas de uso de Google Gemini API
+- GitHub: [@entreunosyceros](https://github.com/entreunosyceros)
+- Web: [entreunosyceros.net](https://entreunosyceros.net)
 
 ## 🙏 Agradecimientos
 
-- **Google Gemini AI** por proporcionar una API gratuita y suficiente para este pequeño proyecto
-- **Material Design** por el excelente sistema de diseño
-- **Android Community** por la documentación y recursos
+- [Google Gemini AI](https://ai.google.dev/) por la API gratuita
+- [Material Design](https://m3.material.io/) por el sistema de diseño
+- Comunidad Android por las excelentes bibliotecas
 
 ---
 
-Hecho con ☕ por entreunosyceros.net
+**Nota:** Esta aplicación es solo para fines de entretenimiento y educativos. Úsala responsablemente 😉

@@ -11,6 +11,12 @@ class PreferencesManager(context: Context) {
     companion object {
         private const val PREFS_NAME = "ExcusasPreferences"
         private const val KEY_API_KEY = "gemini_api_key"
+        private const val KEY_THEME_MODE = "theme_mode"
+
+        // Constantes para los modos de tema
+        const val THEME_LIGHT = 0
+        const val THEME_DARK = 1
+        const val THEME_SYSTEM = 2
 
         // API Key por defecto que puedes configurar aquí
         // Si el usuario no la cambia desde la app, se usará esta
@@ -55,5 +61,14 @@ class PreferencesManager(context: Context) {
 
     fun getDefaultApiKey(): String {
         return DEFAULT_API_KEY
+    }
+
+    // Funciones para gestionar el tema
+    fun saveThemeMode(themeMode: Int) {
+        sharedPreferences.edit().putInt(KEY_THEME_MODE, themeMode).apply()
+    }
+
+    fun getThemeMode(): Int {
+        return sharedPreferences.getInt(KEY_THEME_MODE, THEME_SYSTEM)
     }
 }

@@ -14,6 +14,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +31,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.random.Random
+import android.text.InputType
+import android.widget.EditText
+import android.graphics.Matrix
+import androidx.exifinterface.media.ExifInterface
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,6 +46,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var repository: ExcuseRepository
     private var isAIMode = false
     private var currentPhotoUri: Uri? = null
+    // Cuando el usuario escribe una excusa y luego selecciona imagen, marcamos esto para evitar el diálogo adicional
+    private var pendingCustomExcuse: Boolean = false
 
     // Launchers para permisos y actividades
     private val cameraPermissionLauncher = registerForActivityResult(
@@ -341,10 +349,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showMemeOptionsDialog() {
-        if (currentExcuse.isEmpty()) return
-
+        // Permitir generar con excusa automática, escribir excusa propia antes de elegir imagen,
+        // o seleccionar imagen desde galería/cámara directamente.
         val options = arrayOf(
             getString(R.string.meme_option_generate),
+            getString(R.string.write_custom_excuse),
             getString(R.string.meme_option_gallery),
             getString(R.string.meme_option_camera)
         )
@@ -353,11 +362,52 @@ class MainActivity : AppCompatActivity() {
             .setTitle(R.string.create_meme_title)
             .setItems(options) { _, which ->
                 when (which) {
-                    0 -> shareExcuseAsImage() // Generar automático
-                    1 -> checkStoragePermissionAndOpenGallery() // Desde galería
-                    2 -> checkCameraPermissionAndOpen() // Tomar foto
+                    0 -> shareExcuseAsImage() // Generar automático (usa currentExcuse)
+                    1 -> showCustomExcuseAndPickSource() // Escribir excusa y luego elegir imagen
+                    2 -> checkStoragePermissionAndOpenGallery() // Desde galería
+                    3 -> checkCameraPermissionAndOpen() // Tomar foto
                 }
             }
+            .show()
+    }
+
+    private fun showCustomExcuseAndPickSource() {
+        val input = EditText(this).apply {
+            hint = getString(R.string.hint_custom_excuse)
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            minLines = 3
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.enter_custom_excuse)
+            .setView(input)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val custom = input.text.toString().trim()
+                if (custom.isNotEmpty()) {
+                    // Guardar la excusa temporalmente y marcar que el usuario la ha provisto
+                    currentExcuse = custom
+                    pendingCustomExcuse = true
+
+                    // Pedir al usuario que elija la fuente de la imagen
+                    val sources = arrayOf(getString(R.string.meme_option_gallery), getString(R.string.meme_option_camera))
+                    AlertDialog.Builder(this)
+                        .setTitle(R.string.select_meme_source)
+                        .setItems(sources) { _, which ->
+                            when (which) {
+                                0 -> checkStoragePermissionAndOpenGallery()
+                                1 -> checkCameraPermissionAndOpen()
+                            }
+                        }
+                        .setNegativeButton(android.R.string.cancel) { _, _ ->
+                            // Si cancela, limpiar la bandera
+                            pendingCustomExcuse = false
+                        }
+                        .show()
+                } else {
+                    Toast.makeText(this, R.string.custom_excuse_empty, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
@@ -442,26 +492,106 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, R.string.image_processing, Toast.LENGTH_SHORT).show()
 
         try {
-            val inputStream = contentResolver.openInputStream(uri)
-            val originalBitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
+            // Cargar la imagen corrigiendo la orientación EXIF
+            val originalBitmap = loadBitmapWithCorrectOrientation(uri)
 
             if (originalBitmap != null) {
-                // Crear meme con la imagen del usuario
-                val memeBitmap = createMemeWithUserImage(
-                    userImage = originalBitmap,
-                    excuse = currentExcuse,
-                    ironicPhrase = currentIronicPhrase
-                )
-
-                // Guardar y compartir
-                saveAndShareBitmap(memeBitmap)
+                // Si el usuario ya ha escrito una excusa antes de elegir imagen, la usamos directamente
+                if (pendingCustomExcuse) {
+                    pendingCustomExcuse = false
+                    proceedWithExcuse(originalBitmap, currentExcuse)
+                } else {
+                    // Mostrar diálogo para elegir entre excusa generada o escribir propia
+                    showExcuseChoiceDialog(originalBitmap)
+                }
             } else {
                 Toast.makeText(this, R.string.error_generating_image, Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, R.string.error_generating_image, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showExcuseChoiceDialog(userImage: Bitmap) {
+        val options = if (currentExcuse.isNotEmpty()) {
+            arrayOf(
+                getString(R.string.use_generated_excuse),
+                getString(R.string.write_custom_excuse)
+            )
+        } else {
+            arrayOf(getString(R.string.write_custom_excuse))
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.choose_excuse_title)
+            .setItems(options) { _, which ->
+                if (currentExcuse.isNotEmpty() && which == 0) {
+                    // Usar excusa generada
+                    proceedWithExcuse(userImage, currentExcuse)
+                } else {
+                    // Escribir excusa personalizada
+                    showCustomExcuseDialog(userImage)
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun showCustomExcuseDialog(userImage: Bitmap) {
+        val input = EditText(this).apply {
+            hint = getString(R.string.hint_custom_excuse)
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            minLines = 3
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.enter_custom_excuse)
+            .setView(input)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val custom = input.text.toString().trim()
+                if (custom.isNotEmpty()) {
+                    proceedWithExcuse(userImage, custom)
+                } else {
+                    Toast.makeText(this, R.string.custom_excuse_empty, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    // Cargar un bitmap y corregir rotación según EXIF
+    private fun loadBitmapWithCorrectOrientation(uri: Uri): Bitmap? {
+        var input1: InputStream? = null
+        var input2: InputStream? = null
+        return try {
+            input1 = contentResolver.openInputStream(uri)
+            val exif = input1?.let { ExifInterface(it) }
+
+            input2 = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(input2)
+
+            val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+            val rotation = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                else -> 0
+            }
+
+            if (rotation != 0 && bitmap != null) {
+                val matrix = Matrix()
+                matrix.postRotate(rotation.toFloat())
+                Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            } else {
+                bitmap
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        } finally {
+            try { input1?.close() } catch (_: Exception) {}
+            try { input2?.close() } catch (_: Exception) {}
         }
     }
 
@@ -476,8 +606,10 @@ class MainActivity : AppCompatActivity() {
         val canvas = Canvas(bitmap)
 
         // Redimensionar y centrar la imagen del usuario
-        val scaledImage = scaleBitmapToFit(userImage, width, height - 400)
-        val imageTop = 100f
+        // Reservar menos espacio para texto: la imagen ocupará la mayor parte del lienzo
+        val reservedForText = (height * 0.25).toInt() // 25% para textos (arriba + abajo)
+        val scaledImage = ImageUtils.scaleBitmapToFit(userImage, width, height - reservedForText)
+        val imageTop = 40f
         val imageLeft = (width - scaledImage.width) / 2f
         canvas.drawBitmap(scaledImage, imageLeft, imageTop, null)
 
@@ -489,14 +621,15 @@ class MainActivity : AppCompatActivity() {
         paint.style = Paint.Style.FILL_AND_STROKE
 
         // Dibujar excusa en la parte superior con fondo
-        val topTextY = 70f
+        val topTextY = 40f
+        // Limitar la excusa a un máximo de 4 líneas y 22% de altura
         drawTextWithBackground(canvas, excuse, width / 2f, topTextY, paint, width - 100,
-            Color.BLACK, 60f)
+            Color.BLACK, initialTextSize = 60f, maxLines = 4, maxHeightFraction = 0.22f)
 
         // Dibujar frase irónica en la parte inferior
         val bottomTextY = height - 120f
         drawTextWithBackground(canvas, ironicPhrase, width / 2f, bottomTextY, paint, width - 100,
-            Color.BLACK, 40f)
+            Color.BLACK, initialTextSize = 36f, maxLines = 2, maxHeightFraction = 0.12f)
 
         // Marca de agua
         paint.textSize = 24f
@@ -507,16 +640,6 @@ class MainActivity : AppCompatActivity() {
         return bitmap
     }
 
-    private fun scaleBitmapToFit(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
-        val ratio = minOf(
-            maxWidth.toFloat() / bitmap.width,
-            maxHeight.toFloat() / bitmap.height
-        )
-        val newWidth = (bitmap.width * ratio).toInt()
-        val newHeight = (bitmap.height * ratio).toInt()
-        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
-    }
-
     private fun drawTextWithBackground(
         canvas: Canvas,
         text: String,
@@ -525,15 +648,72 @@ class MainActivity : AppCompatActivity() {
         paint: Paint,
         maxWidth: Int,
         backgroundColor: Int,
-        textSize: Float
+        initialTextSize: Float,
+        maxLines: Int = 4,
+        maxHeightFraction: Float = 0.25f
     ) {
+        // Ajustar tamaño de texto para que encaje en maxWidth y no exceda maxLines ni maxHeightFraction
+        var textSize = initialTextSize
         paint.textSize = textSize
 
+        var lines = splitTextIntoLines(text, paint, maxWidth)
+
+        val maxAllowedHeight = canvas.height * maxHeightFraction
+
+        // Reducir tamaño hasta que cumpla las restricciones
+        var attempt = 0
+        while ((lines.size > maxLines || (lines.size * (paint.descent() - paint.ascent())) > maxAllowedHeight) && attempt < 10) {
+            textSize *= 0.85f
+            paint.textSize = textSize
+            lines = splitTextIntoLines(text, paint, maxWidth)
+            attempt++
+        }
+
+        // Calcular dimensiones del fondo
+        val lineHeight = paint.descent() - paint.ascent()
+        val totalHeight = lines.size * (lineHeight + 10)
+        val backgroundPaint = Paint()
+        backgroundPaint.color = backgroundColor
+        backgroundPaint.alpha = 200
+
+        // Dibujar fondo con padding
+        val left = 50f
+        val right = canvas.width - 50f
+        val top = y - 20f
+        val bottom = y + totalHeight + 20f
+        canvas.drawRect(left, top, right, bottom, backgroundPaint)
+
+        // Dibujar texto con sombra en lugar de stroke grueso
+        var currentY = y + 20
+        paint.color = Color.WHITE
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 0f
+        paint.setShadowLayer(4f, 2f, 2f, Color.BLACK)
+
+        // Si hay más líneas que maxLines, truncar y añadir '...'
+        val displayLines = if (lines.size > maxLines) {
+            val truncated = lines.take(maxLines).toMutableList()
+            var last = truncated.last()
+            // Añadir puntos suspensivos si es necesario
+            if (!last.endsWith("...")) last = if (last.length > 3) last.dropLast(3) + "..." else last + "..."
+            truncated[truncated.size - 1] = last
+            truncated
+        } else lines
+
+        for (line in displayLines) {
+            canvas.drawText(line, x, currentY, paint)
+            currentY += lineHeight + 10
+        }
+
+        // Limpiar la sombra para que no afecte otros dibujos
+        paint.clearShadowLayer()
+    }
+
+    private fun splitTextIntoLines(text: String, paint: Paint, maxWidth: Int): List<String> {
         val words = text.split(" ")
         val lines = mutableListOf<String>()
         var currentLine = ""
 
-        // Dividir texto en líneas
         for (word in words) {
             val testLine = if (currentLine.isEmpty()) word else "$currentLine $word"
             val bounds = Rect()
@@ -546,36 +726,8 @@ class MainActivity : AppCompatActivity() {
                 currentLine = testLine
             }
         }
-        if (currentLine.isNotEmpty()) {
-            lines.add(currentLine)
-        }
-
-        // Calcular dimensiones del fondo
-        val lineHeight = paint.descent() - paint.ascent()
-        val totalHeight = lines.size * (lineHeight + 10)
-        val backgroundPaint = Paint()
-        backgroundPaint.color = backgroundColor
-        backgroundPaint.alpha = 180
-
-        // Dibujar fondo
-        canvas.drawRect(
-            50f,
-            y - 20,
-            canvas.width - 50f,
-            y + totalHeight + 20,
-            backgroundPaint
-        )
-
-        // Dibujar texto
-        var currentY = y + 20
-        paint.color = Color.WHITE
-        paint.style = Paint.Style.FILL_AND_STROKE
-        paint.strokeWidth = 6f
-
-        for (line in lines) {
-            canvas.drawText(line, x, currentY, paint)
-            currentY += lineHeight + 10
-        }
+        if (currentLine.isNotEmpty()) lines.add(currentLine)
+        return lines
     }
 
     private fun saveAndShareBitmap(bitmap: Bitmap) {
@@ -713,6 +865,65 @@ class MainActivity : AppCompatActivity() {
         for (line in lines) {
             canvas.drawText(line, x, currentY, paint)
             currentY += lineHeight + 10
+        }
+    }
+
+    private fun proceedWithExcuse(userImage: Bitmap, excuseText: String) {
+        try {
+            Log.d("MainActivity", "Proceeding with excuse: $excuseText")
+            Log.d("MainActivity", "Bitmap size: ${userImage.width}x${userImage.height}")
+
+            // Guardar el bitmap original en cache y abrir la PreviewActivity para editar/posicionar la excusa
+            val uri = saveBitmapToCacheAndGetUri(userImage)
+            if (uri != null) {
+                Log.d("MainActivity", "Bitmap saved to URI: $uri")
+
+                val intent = Intent(this, PreviewActivity::class.java).apply {
+                    putExtra("image_uri", uri.toString())
+                    putExtra("excuse_text", excuseText)
+                    putExtra("ironic_text", currentIronicPhrase)
+                    // Otorgar permisos de lectura para el URI
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(intent)
+            } else {
+                Log.e("MainActivity", "Failed to save bitmap to cache")
+                Toast.makeText(this, R.string.error_generating_image, Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error in proceedWithExcuse", e)
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Guarda un bitmap temporal en cache/images y devuelve un content Uri a través de FileProvider
+    private fun saveBitmapToCacheAndGetUri(bitmap: Bitmap): Uri? {
+        return try {
+            val cachePath = File(cacheDir, "images")
+            if (!cachePath.exists()) {
+                cachePath.mkdirs()
+                Log.d("MainActivity", "Created cache directory: ${cachePath.absolutePath}")
+            }
+
+            val file = File(cachePath, "temp_image_${System.currentTimeMillis()}.png")
+            Log.d("MainActivity", "Saving to file: ${file.absolutePath}")
+
+            val out = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            out.flush()
+            out.close()
+
+            Log.d("MainActivity", "File saved successfully, size: ${file.length()} bytes")
+
+            val uri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
+            Log.d("MainActivity", "FileProvider URI created: $uri")
+
+            uri
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error saving bitmap to cache", e)
+            e.printStackTrace()
+            null
         }
     }
 }

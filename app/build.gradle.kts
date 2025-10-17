@@ -1,5 +1,3 @@
-import org.gradle.api.tasks.Copy
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -38,43 +36,74 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    // Renombrar automáticamente los APKs generados
+    applicationVariants.all {
+        outputs.all {
+            val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val variantName = name
+            outputImpl.outputFileName = when {
+                variantName.contains("debug", ignoreCase = true) -> "excusApp-debug.apk"
+                variantName.contains("release", ignoreCase = true) -> "excusApp-release.apk"
+                else -> "excusApp.apk"
+            }
+        }
+    }
 }
 
-// Eliminar el bloque androidComponents anterior (causaba referencias no resueltas)
-// y usar tareas Gradle para renombrar automáticamente los APKs tras el assemble.
-
+// Tareas para copiar y renombrar APKs a un directorio separado para evitar conflictos con AGP.
 val debugApkDir = layout.buildDirectory.dir("outputs/apk/debug")
 val releaseApkDir = layout.buildDirectory.dir("outputs/apk/release")
+val renamedApkDir = layout.buildDirectory.dir("renamedApk")
 
-// Renombra app-debug.apk -> excusApp-debug.apk
-tasks.register<Copy>("renameDebugApk") {
-    // Ejecutar solo si existe el APK fuente
-    onlyIf {
-        val src = debugApkDir.get().file("app-debug.apk").asFile
-        src.exists()
+abstract class CopySingleApk : DefaultTask() {
+    @get:InputFile
+    abstract val srcApk: RegularFileProperty
+
+    @get:OutputFile
+    abstract val destApk: RegularFileProperty
+
+    @TaskAction
+    fun copyApk() {
+        val preferred = srcApk.get().asFile
+        val dir = preferred.parentFile
+        if (dir == null || !dir.exists()) return
+        val source = if (preferred.exists()) preferred else dir.listFiles { f -> f.isFile && f.extension == "apk" }?.firstOrNull() ?: return
+        destApk.get().asFile.parentFile.mkdirs()
+        source.copyTo(destApk.get().asFile, overwrite = true)
     }
-    from(debugApkDir.map { it.file("app-debug.apk") })
-    into(debugApkDir)
-    rename("app-debug.apk", "excusApp-debug.apk")
-    mustRunAfter("assembleDebug")
 }
 
-// Renombra app-release.apk -> excusApp-release.apk
-tasks.register<Copy>("renameReleaseApk") {
-    // Ejecutar solo si existe el APK fuente
-    onlyIf {
-        val src = releaseApkDir.get().file("app-release.apk").asFile
-        src.exists()
-    }
-    from(releaseApkDir.map { it.file("app-release.apk") })
-    into(releaseApkDir)
-    rename("app-release.apk", "excusApp-release.apk")
-    mustRunAfter("assembleRelease")
+// Copia app-debug.apk -> build/renamedApk/excusApp.apk
+tasks.register<CopySingleApk>("renameDebugApk") {
+    group = "distribution"
+    description = "Copia/renombra el APK debug a build/renamedApk/excusApp.apk"
+    dependsOn("assembleDebug")
+    srcApk.set(debugApkDir.map { it.file("app-debug.apk") })
+    destApk.set(renamedApkDir.map { it.file("excusApp.apk") })
 }
 
-// Encadenar las tareas de rename al final de los assemble correspondientes (configuración perezosa)
-tasks.matching { it.name == "assembleDebug" }.configureEach { finalizedBy("renameDebugApk") }
-tasks.matching { it.name == "assembleRelease" }.configureEach { finalizedBy("renameReleaseApk") }
+// Copia app-release.apk -> build/renamedApk/excusApp-release.apk
+tasks.register<CopySingleApk>("renameReleaseApk") {
+    group = "distribution"
+    description = "Copia/renombra el APK release a build/renamedApk/excusApp-release.apk"
+    dependsOn("assembleRelease")
+    srcApk.set(releaseApkDir.map { it.file("app-release.apk") })
+    destApk.set(renamedApkDir.map { it.file("excusApp-release.apk") })
+}
+
+// Tareas agregadas que ejecutan assemble + rename de forma explícita
+tasks.register("assembleDebugRenamed") {
+    group = "distribution"
+    description = "Genera el APK debug y deja una copia renombrada en build/renamedApk/"
+    dependsOn("renameDebugApk")
+}
+
+tasks.register("assembleReleaseRenamed") {
+    group = "distribution"
+    description = "Genera el APK release y deja una copia renombrada en build/renamedApk/"
+    dependsOn("renameReleaseApk")
+}
 
 dependencies {
 
@@ -95,6 +124,9 @@ dependencies {
     // Lifecycle components
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.runtime)
+
+    // Exif support para corregir la orientación de imágenes
+    implementation("androidx.exifinterface:exifinterface:1.3.6")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

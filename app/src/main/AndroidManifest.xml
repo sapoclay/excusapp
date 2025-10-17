@@ -12,6 +12,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
+        android:name=".ExcusasApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -47,6 +48,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+
+        <!-- PreviewActivity para editar y previsualizar memes -->
+        <activity
+            android:name=".PreviewActivity"
+            android:exported="false"
+            android:label="@string/preview_title"
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".SettingsActivity"
